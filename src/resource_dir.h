@@ -1,5 +1,4 @@
 /**********************************************************************************************
-*
 *   raylibExtras * Utilities and Shared Components for Raylib
 *
 *   Resource Dir * function to help find resource dir in common locations
