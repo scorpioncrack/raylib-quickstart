@@ -12,7 +12,6 @@ void enemigo_ataque(Player &jugador);
 // enemigos
 void enemigos(Player jugador);
 void patrulla();
-//preubaaaaaaaal
 int main()
 {
     float timer = 100.0F, espadaVisible = 0.0F; 
