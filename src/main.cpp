@@ -80,4 +80,5 @@ int main()
 void fondo1(Texture2D fondo_text)
 {
 
+    DrawTexturePro(fondo_text, origen, destino, Vector2{0, 0}, 0.0f, WHITE);
 }
