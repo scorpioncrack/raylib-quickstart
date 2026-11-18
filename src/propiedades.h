@@ -29,7 +29,7 @@ typedef struct Player
     int dir;
     int vida;
     int estado;
-    float invul;            // NUEVO: segundos de invulnerabilidad que le quedan
+    float invul;            
 } _player;
 
 typedef struct Objeto
@@ -64,7 +64,7 @@ Player jugador1 = {
     1,                    // dir (1 = mirando a la derecha)
     5,                    // vida
     1,                    // estado
-    0                     // invul (NUEVO)
+    0                     // invul 
 };
 // ataques enemigos
 Armas contacto = {-1, {X, Y, -32.0F, -32.0F}, RED, 1, 0.0F}; // tipo, rango, color, dano, tiempo
@@ -73,7 +73,7 @@ Armas contacto = {-1, {X, Y, -32.0F, -32.0F}, RED, 1, 0.0F}; // tipo, rango, col
 // base (Player): pos{x,y}, rec{x,y,ancho,alto}, velX, velY, saltar, eje, tipo, arma, dir, vida
 // resto (Enemigo): dano, estado (1 = vivo, 0 = muerto), color, distancia, desplazado, velocidad
 Enemigo lista_enemigos[] = {
-    // {{base}, estado, color, distancia, desplazado, velocidad, tipo, ataque}
+    
     {{{800, 668}, {800, 668, 32.0F, 32.0F}, 0, 0, 0, 0, 0, {}, 1, 3}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto},
     {{{300, 668}, {300, 668, 32.0F, 32.0F}, 0, 0, 0, 0, 0, {}, 1, 5}, 1, GREEN, 200.0F, 0.0F, 3.0F, contacto}};
 
