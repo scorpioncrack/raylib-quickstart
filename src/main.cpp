@@ -12,7 +12,6 @@ void enemigo_ataque(Player &jugador);
 // enemigos
 void enemigos(Player jugador);
 void patrulla();
-
 int main()
 {
     float timer = 100.0F, espadaVisible = 0.0F; 
@@ -79,8 +78,8 @@ int main()
                 espadaVisible = 0.15F; 
             }
         }
-//ola mundo
-// mensaje de prueba
+
+
 
         // ataque enemigos
         enemigo_ataque(jugador1);
