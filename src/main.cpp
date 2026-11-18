@@ -13,7 +13,7 @@ void enemigo_ataque(Player &jugador);
 void enemigos(Player jugador);
 void patrulla();
 // fondo del juego
-void fondo1();
+void fondo1(Texture2D fondo_text);
 int main()
 {
     float timer = 100.0F, espadaVisible = 0.0F;
@@ -88,6 +88,8 @@ int main()
         patrulla();
         BeginDrawing();
         ClearBackground(GRAY);
+        fondo1(fondo_text); // <-- aquí
+
         // dibujar objetos
         DrawText((TextFormat("vidas %d", jugador1.vida)), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
@@ -122,6 +124,8 @@ int main()
         EndDrawing();
     }
     UnloadTexture(jugador_text);
+    UnloadTexture(fondo_text); // <-- agregar
+
     CloseWindow();
     return 0;
 }
@@ -319,5 +323,8 @@ void patrulla()
 }
 void fondo1(Texture2D fondo_text)
 {
+    Rectangle origen = {0, 0, (float)fondo_text.width, (float)fondo_text.height};
+    Rectangle destino = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
 
+    DrawTexturePro(fondo_text, origen, destino, Vector2{0, 0}, 0.0f, WHITE);
 }
