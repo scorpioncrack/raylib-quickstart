@@ -78,8 +78,8 @@ int main()
                 espadaVisible = 0.15F; 
             }
         }
-
-
+//ola mundo
+// mensaje de prueba
 
         // ataque enemigos
         enemigo_ataque(jugador1);
