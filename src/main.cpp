@@ -86,4 +86,5 @@ void fondo1(Texture2D fondo_text)
     Rectangle destino = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
 
     DrawTexturePro(fondo_text, origen, destino, Vector2{0, 0}, 0.0f, WHITE);
+    
 }
