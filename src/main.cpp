@@ -79,8 +79,7 @@ int main()
             }
         }
 
-        // if (IsKeyPressed(KEY_R))
-        //     reiniciarPartida(&jugador1, enemigos, &lanza);
+
 
         // ataque enemigos
         enemigo_ataque(jugador1);
