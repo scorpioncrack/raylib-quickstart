@@ -3,8 +3,7 @@
 #include "eventos.h"
 
 // fondo del juego
-void fondo1(Texture2D fondo_text);
-
+void fondo1();
 int main()
 {
     InitWindow(1100, 800, "THE ABYSS");
@@ -37,7 +36,6 @@ int main()
 
         BeginDrawing();
         ClearBackground(GRAY);
-
         // dibujar objetos
         DrawText(TextFormat("vidas %d", jugador1.vida), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
@@ -75,11 +73,13 @@ int main()
 
     UnloadTexture(fondo_text);
     UnloadTexture(jugador_text);
+    UnloadTexture(fondo_text); // <-- agregar
+
     CloseWindow();
     return 0;
 }
 
 void fondo1(Texture2D fondo_text)
 {
-    (void)fondo_text;
+
 }
