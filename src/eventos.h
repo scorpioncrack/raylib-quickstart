@@ -1,7 +1,7 @@
 #pragma once
 #include "propiedades.h"
 #include <cmath> // fabsf
-#include "visuales.h"
+
 // variables del jugador que usan act_jug y el dibujado del main
 float timer = 100.0F, espadaVisible = 0.0F;
 float tiem = 0.0F;
@@ -25,6 +25,7 @@ void patrulla();
 
 void act_jug(Player *entidad)
 {
+    
     // timers
     timer += GetFrameTime();
     espadaVisible -= GetFrameTime();
