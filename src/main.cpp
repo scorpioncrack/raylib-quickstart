@@ -3,7 +3,7 @@
 #include "eventos.h"
 
 // fondo del juego
-void fondo1();
+void fondo1(Texture2D fondo_text);
 int main()
 {
     InitWindow(1100, 800, "THE ABYSS");
@@ -36,6 +36,8 @@ int main()
 
         BeginDrawing();
         ClearBackground(GRAY);
+        fondo1(fondo_text); // <-- aquí
+
         // dibujar objetos
         DrawText(TextFormat("vidas %d", jugador1.vida), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
@@ -78,8 +80,10 @@ int main()
     CloseWindow();
     return 0;
 }
-
 void fondo1(Texture2D fondo_text)
 {
+    Rectangle origen = {0, 0, (float)fondo_text.width, (float)fondo_text.height};
+    Rectangle destino = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
 
+    DrawTexturePro(fondo_text, origen, destino, Vector2{0, 0}, 0.0f, WHITE);
 }
