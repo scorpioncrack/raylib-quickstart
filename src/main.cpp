@@ -12,13 +12,17 @@ void enemigo_ataque(Player &jugador);
 // enemigos
 void enemigos(Player jugador);
 void patrulla();
+// fondo del juego
+void fondo1();
 int main()
 {
-    float timer = 100.0F, espadaVisible = 0.0F; 
+    float timer = 100.0F, espadaVisible = 0.0F;
     InitWindow(1100, 800, "THE ABYSS");
     ToggleBorderlessWindowed();
     SearchAndSetResourceDir("resources");
     Texture2D jugador_text = LoadTexture("personaje.png");
+    Texture2D fondo_text = LoadTexture("fondo1.png");
+
     if (jugador_text.id == 0)
     {
         TraceLog(LOG_WARNING, "NO CARGO personaje.png");
@@ -43,7 +47,6 @@ int main()
         espadaVisible -= GetFrameTime();
         jugador1.invul -= GetFrameTime();
 
-        
         tiem += GetFrameTime();
         if (tiem >= 0.18F)
         {
@@ -75,11 +78,9 @@ int main()
             {
                 ataque(&jugador1);
                 timer = 0.0F;
-                espadaVisible = 0.15F; 
+                espadaVisible = 0.15F;
             }
         }
-
-
 
         // ataque enemigos
         enemigo_ataque(jugador1);
@@ -92,12 +93,11 @@ int main()
         for (int i = 0; i < numObjetos; i++)
             DrawRectangleRec(escenario[i].rect, escenario[i].color);
 
-        
         Rectangle ori = {(float)(fra * anc), 0, (float)anc, (float)alt};
         if (jugador1.dir < 0)
             ori.width = -(float)anc;
 
-        Color tinte = WHITE; 
+        Color tinte = WHITE;
         if (jugador1.invul > 0)
         {
             if ((int)(jugador1.invul * 10) % 2 == 0)
@@ -316,4 +316,8 @@ void patrulla()
             enemigo->desplazado += fabsf(enemigo->base.velX);
         }
     }
+}
+void fondo1(Texture2D fondo_text)
+{
+
 }
