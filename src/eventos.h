@@ -43,18 +43,36 @@ void act_jug(Player *entidad)
 
     // movimiento del jugador
     entidad->velX = 0;
+    if (entidad->murcielago)
+    {
+        entidad->velY = 0;
+        if (IsKeyDown(KEY_DOWN))
+            entidad->velY = SPEED;
+
+        if (IsKeyDown(KEY_UP))
+            entidad->velY = -SPEED;
+    }
+    else
+    {
+        if (IsKeyPressed(KEY_Z))
+        {
+            if (entidad->saltar == 1)
+            {
+                entidad->saltar = 0;
+                entidad->velY = -SALTO;
+            }
+        }
+    }
+    if (IsKeyPressed(KEY_A))
+    {
+        entidad->murcielago = !entidad->murcielago;
+
+    }
     if (IsKeyDown(KEY_LEFT))
         entidad->velX = -SPEED;
     if (IsKeyDown(KEY_RIGHT))
         entidad->velX = SPEED;
-    if (IsKeyPressed(KEY_Z))
-    {
-        if (entidad->saltar == 1)
-        {
-            entidad->saltar = 0;
-            entidad->velY = -SALTO;
-        }
-    }
+
     if (entidad->velX != 0)
         entidad->dir = (entidad->velX > 0) ? 1 : -1;
 
@@ -96,7 +114,11 @@ void movimiento(Player *entidad)
     objetos(entidad);
 
     // movimiento en y
-    entidad->velY += GRAVEDAD;
+    if (!entidad->murcielago)
+    {
+        entidad->velY += GRAVEDAD;
+    }
+
     entidad->pos.y += entidad->velY;
     entidad->rec.y = entidad->pos.y;
     entidad->eje = 0;

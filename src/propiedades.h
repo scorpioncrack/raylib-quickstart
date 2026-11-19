@@ -34,6 +34,7 @@ typedef struct Player
     int vida;
     int estado;
     float invul;
+    bool murcielago;
 } _player;
 
 typedef struct Objeto
@@ -67,7 +68,8 @@ Player jugador1 = {
     1,                    // dir (1 = derecha)
     5,                    // vida
     1,                    // estado
-    0                     // invul
+    0,                    // invul
+    false                  // murcielago
 };
 
 // ataques enemigos: tipo, rango, color, dano, tiempo
