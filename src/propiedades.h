@@ -7,8 +7,10 @@
 #define SALTO 10
 #define GRAVEDAD 0.4F
 #define IFRAME 1.0F
-#define FRAM 4 // cuadros de la animacion
-
+#define FRAM 4 
+#define DASH SPEED*2.5
+#define DASH_DURACION  0.15F
+#define DASH_ESPERA 2
 typedef struct Armas
 {
     int tipo;

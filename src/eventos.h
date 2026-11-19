@@ -3,7 +3,7 @@
 #include <cmath> // fabsf
 
 // variables del jugador que usan act_jug y el dibujado del main
-float timer = 100.0F, espadaVisible = 0.0F;
+float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F;
 float tiem = 0.0F;
 int fra = 0;
 
@@ -13,6 +13,7 @@ void act_jug(Player *entidad);
 void movimiento(Player *entidad);
 void objetos(Player *entidad);
 void plataforma(Player *entidad, Objeto *plataforma);
+void dash(Player *entidad);
 // combate
 void ataque(Player *jugador);
 void impacto(Player jugador, Enemigo *enemigo);
@@ -25,12 +26,13 @@ void patrulla();
 
 void act_jug(Player *entidad)
 {
-    
+
     // timers
     timer += GetFrameTime();
     espadaVisible -= GetFrameTime();
     entidad->invul -= GetFrameTime();
-
+    dashEspera -= GetFrameTime();
+    dashDuracion -= GetFrameTime();
     // animacion
     tiem += GetFrameTime();
     if (tiem >= 0.18F)
@@ -45,7 +47,7 @@ void act_jug(Player *entidad)
         entidad->velX = -SPEED;
     if (IsKeyDown(KEY_RIGHT))
         entidad->velX = SPEED;
-    if (IsKeyDown(KEY_UP))
+    if (IsKeyPressed(KEY_Z))
     {
         if (entidad->saltar == 1)
         {
@@ -55,6 +57,19 @@ void act_jug(Player *entidad)
     }
     if (entidad->velX != 0)
         entidad->dir = (entidad->velX > 0) ? 1 : -1;
+
+    if (IsKeyPressed(KEY_C))
+    {
+        if (dashEspera < 0)
+        {
+            dashEspera = DASH_ESPERA;
+            dashDuracion = DASH_DURACION;
+        }
+    }
+    if (dashDuracion > 0)
+    {
+        dash(entidad);
+    }
 
     // ataque del jugador
     if (IsKeyDown(KEY_X))
@@ -71,7 +86,6 @@ void act_jug(Player *entidad)
     enemigo_ataque(*entidad);
     movimiento(entidad);
 }
-
 // ==================== MOVIMIENTO Y COLISIONES ====================
 void movimiento(Player *entidad)
 {
@@ -166,6 +180,17 @@ void plataforma(Player *entidad, Objeto *plataforma)
     }
 }
 
+void dash(Player *entidad)
+{
+    if (entidad->dir == 1)
+    {
+        entidad->velX = DASH;
+    }
+    else
+    {
+        entidad->velX = -DASH;
+    }
+}
 // ==================== COMBATE ====================
 
 void ataque(Player *atacante)

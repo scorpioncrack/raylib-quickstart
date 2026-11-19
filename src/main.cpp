@@ -5,16 +5,12 @@ void fondo1(Texture2D fondo_text);
 int main()
 {
     InitWindow(1100, 800, "THE ABYSS");
-    ToggleBorderlessWindowed(); // requiere raylib 5.0+; si no existe usa ToggleFullscreen()
+    ToggleBorderlessWindowed(); 
     SearchAndSetResourceDir("resources");
 
     Texture2D jugador_text = LoadTexture("personaje.png");
     Texture2D fondo_text = LoadTexture("fondo1.png");
 
-    if (jugador_text.id == 0)
-    {
-        TraceLog(LOG_WARNING, "NO CARGO personaje.png");
-    }
     SetTextureFilter(jugador_text, TEXTURE_FILTER_POINT);
     int anc = jugador_text.width / FRAM;
     int alt = jugador_text.height;
@@ -29,7 +25,7 @@ int main()
 
     while (!WindowShouldClose())
     {
-        act_jug(&jugador1); // timers, animacion, teclas, ataque y movimiento
+        act_jug(&jugador1); 
         patrulla();
 
         BeginDrawing();
