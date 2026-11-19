@@ -1,3 +1,4 @@
+// JESUS GMALIEL AVILEZ SUAREZ
 #pragma once
 #include "propiedades.h"
 #include <cmath> // fabsf
@@ -16,7 +17,7 @@ void plataforma(Player *entidad, Objeto *plataforma);
 void dash(Player *entidad);
 // combate
 void ataque(Player *jugador);
-void impacto(Player jugador, Enemigo *enemigo);
+void impacto(Player *jugador, Enemigo *enemigo);
 void enemigo_ataque(Player &jugador);
 // enemigos
 void enemigos(Player jugador);
@@ -43,7 +44,7 @@ void act_jug(Player *entidad)
 
     // movimiento del jugador
     entidad->velX = 0;
-    if (entidad->murcielago)
+    if (entidad->volar)
     {
         entidad->velY = 0;
         if (IsKeyDown(KEY_DOWN))
@@ -65,8 +66,7 @@ void act_jug(Player *entidad)
     }
     if (IsKeyPressed(KEY_A))
     {
-        entidad->murcielago = !entidad->murcielago;
-
+        entidad->volar = !entidad->volar;
     }
     if (IsKeyDown(KEY_LEFT))
         entidad->velX = -SPEED;
@@ -90,7 +90,7 @@ void act_jug(Player *entidad)
     }
 
     // ataque del jugador
-    if (IsKeyDown(KEY_X))
+    if (IsKeyPressed(KEY_X))
     {
         if (timer >= entidad->arma.tiempo)
         {
@@ -114,7 +114,7 @@ void movimiento(Player *entidad)
     objetos(entidad);
 
     // movimiento en y
-    if (!entidad->murcielago)
+    if (!entidad->volar)
     {
         entidad->velY += GRAVEDAD;
     }
@@ -201,9 +201,11 @@ void plataforma(Player *entidad, Objeto *plataforma)
         }
     }
 }
+// ==================== habilidades ====================
 
 void dash(Player *entidad)
 {
+
     if (entidad->dir == 1)
     {
         entidad->velX = DASH;
@@ -213,32 +215,43 @@ void dash(Player *entidad)
         entidad->velX = -DASH;
     }
 }
+
 // ==================== COMBATE ====================
 
 void ataque(Player *atacante)
 {
+
     if (atacante->dir == 1)
         atacante->arma.rango.x = atacante->pos.x + atacante->rec.width;
     else
         atacante->arma.rango.x = atacante->pos.x - atacante->arma.rango.width;
-    atacante->arma.rango.y = atacante->pos.y;
+    atacante->arma.rango.y = atacante->pos.y + 30.0F;
     enemigos(*atacante);
 }
 
-void impacto(Player jugador, Enemigo *enemigo)
+void impacto(Player *jugador, Enemigo *enemigo)
 {
-    if (CheckCollisionRecs(jugador.arma.rango, enemigo->base.rec))
+
+    if (CheckCollisionRecs(jugador->arma.rango, enemigo->base.rec))
     {
         if (enemigo->estado)
         {
             int danio = 0;
-            switch (jugador.arma.tipo)
+            switch (jugador->arma.tipo)
             {
             case 1:
-                danio = jugador.arma.dano;
+                danio = jugador->arma.dano;
                 break;
             }
-
+            if (jugador1.sangre+0.3<=1)
+            {
+                jugador1.sangre+=.3;
+            }
+            else
+            {
+                jugador1.sangre=1.0;
+            }
+            
             enemigo->base.vida -= danio;
             if (enemigo->base.vida <= 0)
                 enemigo->estado = 0;
@@ -286,7 +299,7 @@ void enemigo_ataque(Player &jugador)
 void enemigos(Player jugador)
 {
     for (int i = 0; i < numEnemigos; i++)
-        impacto(jugador, &lista_enemigos[i]);
+        impacto(&jugador, &lista_enemigos[i]);
 }
 
 void patrulla()

@@ -32,7 +32,7 @@ int main()
         ClearBackground(GRAY);
         fondo1(fondo_text);
         // dibujar objetos
-        DrawText(TextFormat("vidas %d", jugador1.vida), 200, 200, 40, WHITE);
+        DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
             DrawRectangleRec(escenario[i].rect, escenario[i].color);
 
