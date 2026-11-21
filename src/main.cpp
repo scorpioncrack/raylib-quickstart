@@ -1,15 +1,16 @@
 #include "eventos.h"
-
+#include "visuales.h"
 // fondo del juego
 void fondo1(Texture2D fondo_text);
 int main()
 {
     InitWindow(1100, 800, "THE ABYSS");
-    ToggleBorderlessWindowed(); 
+    ToggleBorderlessWindowed();
     SearchAndSetResourceDir("resources");
 
     Texture2D jugador_text = LoadTexture("personaje.png");
     Texture2D fondo_text = LoadTexture("fondo1.png");
+    Texture2D plat_text = LoadTexture("plataforma.png");
 
     SetTextureFilter(jugador_text, TEXTURE_FILTER_POINT);
     int anc = jugador_text.width / FRAM;
@@ -25,7 +26,7 @@ int main()
 
     while (!WindowShouldClose())
     {
-        act_jug(&jugador1); 
+        act_jug(&jugador1);
         patrulla();
 
         BeginDrawing();
@@ -34,8 +35,7 @@ int main()
         // dibujar objetos
         DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
-            DrawRectangleRec(escenario[i].rect, escenario[i].color);
-
+            textura_plataformas(plat_text, escenario[i].rect);
         Rectangle ori = {(float)(fra * anc), 0, (float)anc, (float)alt};
         if (jugador1.dir < 0)
             ori.width = -(float)anc;
@@ -69,16 +69,7 @@ int main()
     UnloadTexture(fondo_text);
     UnloadTexture(jugador_text);
     UnloadTexture(fondo_text); // <-- agregar
-
+    UnloadTexture(plat_text);
     CloseWindow();
     return 0;
-}
-
-
-void fondo1(Texture2D fondo_text)
-{
-    Rectangle origen = {0, 0, (float)fondo_text.width, (float)fondo_text.height};
-    Rectangle destino = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
-
-    DrawTexturePro(fondo_text, origen, destino, Vector2{0, 0}, 0.0f, WHITE);
 }
