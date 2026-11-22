@@ -1,20 +1,17 @@
 #include "eventos.h"
 #include "visuales.h"
-// fondo del juego
-void fondo1(Texture2D fondo_text);
+
 int main()
 {
     InitWindow(1100, 800, "THE ABYSS");
     ToggleBorderlessWindowed();
     SearchAndSetResourceDir("resources");
 
-    Texture2D jugador_text = LoadTexture("personaje.png");
+    Texture2D jugador_text = LoadTexture("protagonista/personaje_principal.png"); // <-- hoja nueva
     Texture2D fondo_text = LoadTexture("fondo1.png");
     Texture2D plat_text = LoadTexture("plataforma.png");
 
-    SetTextureFilter(jugador_text, TEXTURE_FILTER_POINT);
-    int anc = jugador_text.width / FRAM;
-    int alt = jugador_text.height;
+    SetTextureFilter(jugador_text, TEXTURE_FILTER_BILINEAR); // <-- BILINEAR porque se dibuja escalado
     SetTargetFPS(60);
 
     switch (jugador1.tipo)
@@ -26,19 +23,19 @@ int main()
 
     while (!WindowShouldClose())
     {
+        // ---------- LÓGICA ----------
         act_jug(&jugador1);
+        actualizar_animacion(&jugador1); // <-- NUEVO
         patrulla();
 
+//dibujar dibujos
         BeginDrawing();
         ClearBackground(GRAY);
         fondo1(fondo_text);
-        // dibujar objetos
+
         DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
             textura_plataformas(plat_text, escenario[i].rect);
-        Rectangle ori = {(float)(fra * anc), 0, (float)anc, (float)alt};
-        if (jugador1.dir < 0)
-            ori.width = -(float)anc;
 
         Color tinte = WHITE;
         if (jugador1.invul > 0)
@@ -47,12 +44,7 @@ int main()
                 tinte = Fade(WHITE, 0.3F);
         }
 
-        DrawTexturePro(
-            jugador_text,
-            ori,
-            Rectangle{jugador1.pos.x, jugador1.pos.y, jugador1.rec.width, jugador1.rec.height},
-            Vector2{0, 0},
-            0.0f, tinte);
+        dibujar_jugador(jugador_text, &jugador1, tinte); // <-- NUEVO (reemplaza el DrawTexturePro viejo)
 
         for (int i = 0; i < numEnemigos; i++)
         {
@@ -68,7 +60,6 @@ int main()
 
     UnloadTexture(fondo_text);
     UnloadTexture(jugador_text);
-    UnloadTexture(fondo_text); // <-- agregar
     UnloadTexture(plat_text);
     CloseWindow();
     return 0;

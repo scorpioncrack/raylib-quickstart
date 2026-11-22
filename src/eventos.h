@@ -7,6 +7,8 @@
 float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F;
 float tiem = 0.0F;
 int fra = 0;
+int fila_anim = 0;   // 0 quieto, 1 correr, 2 saltar
+
 
 // actualizar
 void act_jug(Player *entidad);
@@ -35,14 +37,13 @@ void act_jug(Player *entidad)
     entidad->invul -= GetFrameTime();
     dashEspera -= GetFrameTime();
     dashDuracion -= GetFrameTime();
-    // animacion
+       // animacion
     tiem += GetFrameTime();
     if (tiem >= 0.18F)
     {
         tiem = 0.0F;
         fra = (fra + 1) % FRAM;
     }
-
     // movimiento del jugador
     entidad->velX = 0;
     if (entidad->volar)
