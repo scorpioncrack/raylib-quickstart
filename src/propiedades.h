@@ -11,6 +11,7 @@
 #define DASH SPEED*2.5
 #define DASH_DURACION  0.15F
 #define DASH_ESPERA 2
+
 typedef struct Armas
 {
     int tipo;

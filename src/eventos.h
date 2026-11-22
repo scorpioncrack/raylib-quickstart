@@ -27,7 +27,8 @@ void patrulla();
 
 void act_jug(Player *entidad)
 {
-
+    // otros
+    int lanza_sangre =0;
     // timers
     timer += GetFrameTime();
     espadaVisible -= GetFrameTime();
@@ -76,6 +77,7 @@ void act_jug(Player *entidad)
     if (entidad->velX != 0)
         entidad->dir = (entidad->velX > 0) ? 1 : -1;
 
+    //habiliades
     if (IsKeyPressed(KEY_C))
     {
         if (dashEspera < 0)
@@ -88,7 +90,15 @@ void act_jug(Player *entidad)
     {
         dash(entidad);
     }
-
+    if (IsKeyPressed(KEY_F))
+    {
+        if (entidad->sangre>=1)
+        {
+            //lanza_sangre();
+        }
+        
+    }
+    
     // ataque del jugador
     if (IsKeyPressed(KEY_X))
     {
@@ -216,6 +226,10 @@ void dash(Player *entidad)
     }
 }
 
+void lanza_sangre()
+{
+
+}
 // ==================== COMBATE ====================
 
 void ataque(Player *atacante)
