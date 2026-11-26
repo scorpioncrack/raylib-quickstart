@@ -36,7 +36,7 @@ int main()
         pantallas(&jugador1);
         actualizar_animacion(&jugador1);
         anim_murc();
-        patrulla();
+        
 
         fondo_y_murc(plat_text, murc_text, jugador_text);
     }
