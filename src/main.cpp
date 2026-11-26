@@ -1,4 +1,4 @@
-#include "eventos.h"   // aqui adentro ya se incluye tienda.h
+#include "eventos.h" // aqui adentro ya se incluye tienda.h
 #include "visuales.h"
 
 int main()
@@ -12,6 +12,10 @@ int main()
     fondos[0] = LoadTexture("fondo1.png");
     fondos[1] = LoadTexture("fondo2.png");
     fondos[2] = LoadTexture("fondo1.png");
+
+    // Cargar texturas de corazones (cambia la ruta si las tienes en otra carpeta)
+    corazon_rojo = LoadTexture("vida/vida_llena.png");
+    corazon_oscuro = LoadTexture("vida/vida_vacia.png");
 
     areas[0].rect = {0, 0, 10, LARGO_pantalla};
     areas[1].rect = {ANCHO_PANTALLA - 10, 0, 10, LARGO_pantalla};
@@ -51,6 +55,9 @@ int main()
         ClearBackground(GRAY);
 
         fondo1(fondos[fondo_inicial]);
+
+        // Dibujar corazones en la esquina superior izquierda
+        corazones_vida(&jugador1);
 
         DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
         DrawText(TextFormat("Monedas: %d", jugador1.monedas), 200, 250, 40, YELLOW);
@@ -93,4 +100,7 @@ int main()
     UnloadTexture(fondos[2]);
     UnloadTexture(jugador_text);
     UnloadTexture(murc_text);
+    UnloadTexture(plat_text);
+    UnloadTexture(corazon_rojo);
+    UnloadTexture(corazon_oscuro);
 }

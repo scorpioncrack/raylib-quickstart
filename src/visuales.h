@@ -16,6 +16,28 @@ enum
 float tmu = 0.0f;
 int fmu = 0;
 
+// texturas de corazones
+Texture2D corazon_rojo;
+Texture2D corazon_oscuro;
+
+void corazones_vida(Player *vida)
+{
+    int maxVidas = 5;
+    float margen = 20.0f;     // Distancia desde la esquina superior izquierda
+    float tamano = 100.0f;     // Ancho y alto de cada corazon
+    float separacion = 45.0f; // Espacio entre cada corazon
+
+    for (int i = 0; i < maxVidas; i++)
+    {
+        Texture2D texActual = (i < vida->vida) ? corazon_rojo : corazon_oscuro;
+
+        Rectangle origen = {0, 0, (float)texActual.width, (float)texActual.height};
+        Rectangle destino = {margen + (i * separacion), margen, tamano, tamano};
+
+        DrawTexturePro(texActual, origen, destino, Vector2{0, 0}, 0.0f, WHITE);
+    }
+}
+
 void textura_plataformas(Texture2D tex, Rectangle rect)
 {
     Rectangle origen = {0, 0, (float)tex.width, (float)tex.height};
@@ -188,7 +210,6 @@ void fondo_y_murc(Texture2D plat_text, Texture2D murc_text, Texture2D jugador_te
 {
     BeginDrawing();
     ClearBackground(GRAY);
-
 
     fondo1(fondos[fondo_inicial]);
 
