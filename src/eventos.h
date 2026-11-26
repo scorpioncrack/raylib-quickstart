@@ -1,6 +1,7 @@
 // JESUS GMALIEL AVILEZ SUAREZ
 #pragma once
 #include "propiedades.h"
+#include "mas.h" // <- 
 #include <cmath> // fabsf
 #define NUM_FONDOS 3
 #define ANCHO_PANTALLA 1920
@@ -13,7 +14,7 @@ Objeto areas[2];
 
 // variables del jugador que usan act_jug y el dibujado del main
 float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F, lanzaDuracion = 0.0F;
-int lanzaDir = 1; // direccion en la que va la lanza (se fija al lanzarla)
+int lanzaDir = 1;
 float tiem = 0.0F;
 int fra = 0;
 int fila_anim = 0; // 0 quieto, 1 correr, 2 saltar
@@ -79,7 +80,7 @@ void act_jug(Player *entidad)
         entidad->volar = !entidad->volar;
         if (entidad->volar)
         {
-            // caja baja de 64 a 40, los pies quedan en el mismo lugar
+
             entidad->pos.y += 24;
             entidad->rec.height = 40;
         }
@@ -148,6 +149,7 @@ void act_jug(Player *entidad)
     // dano de enemigos y movimiento
     enemigo_ataque(*entidad);
     movimiento(entidad);
+    patrulla();
 }
 
 // ==================== MOVIMIENTO Y COLISIONES ====================
@@ -264,10 +266,9 @@ void dash(Player *entidad)
 
 void lanza_sangre()
 {
-    // avanzar en la direccion fijada al lanzar
+
     lanza.rango.x += lanzaDir * VEL_LANZA;
 
-    // chocar con paredes/plataformas
     for (int i = 0; i < numObjetos; i++)
     {
         if (escenario[i].blocking && CheckCollisionRecs(lanza.rango, escenario[i].rect))
@@ -288,13 +289,17 @@ void lanza_sangre()
                 enemigo->base.vida -= lanza.dano;
                 if (enemigo->base.vida <= 0)
                     enemigo->estado = 0;
-                lanzaDuracion = 0; // la lanza desaparece al golpear
+                lanzaDuracion = 0;
                 return;
             }
         }
     }
 }
-
+// curar
+void curar(Player entidad)
+{
+    entidad.vida += 1;
+}
 // ==================== COMBATE ====================
 
 void ataque(Player *atacante)
@@ -328,7 +333,7 @@ void impacto(Player *jugador, Enemigo *enemigo)
             }
             else
             {
-                jugador1.sangre = 1.0;
+                jugador1.sangre = 5;
             }
 
             enemigo->base.vida -= danio;

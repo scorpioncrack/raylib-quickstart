@@ -1,5 +1,4 @@
-#include "mas.h"
-#include "eventos.h"
+#include "eventos.h"   // aqui adentro ya se incluye tienda.h
 #include "visuales.h"
 
 int main()
@@ -23,8 +22,8 @@ int main()
     SetTextureFilter(murc_text, TEXTURE_FILTER_BILINEAR);
     SetTargetFPS(60);
 
-    tienda_cargar();          // <- tienda
-    jugador1.monedas = 100;   // temporal, para probar
+    tienda_cargar();
+    jugador1.monedas = 100; // temporal, para probar
 
     switch (jugador1.tipo)
     {
@@ -35,7 +34,8 @@ int main()
 
     while (!WindowShouldClose())
     {
-        tienda_actualizar(&jugador1, fondo_inicial);   // <- SIEMPRE, fuera del if
+        // ---------- ACTUALIZAR ----------
+        tienda_actualizar(&jugador1, fondo_inicial); // siempre, fuera del if
 
         if (!tienda_abierta())
         {
@@ -46,6 +46,7 @@ int main()
             patrulla();
         }
 
+        // ---------- DIBUJAR ----------
         BeginDrawing();
         ClearBackground(GRAY);
 
@@ -57,7 +58,7 @@ int main()
         for (int i = 0; i < numObjetos; i++)
             textura_plataformas(plat_text, escenario[i].rect);
 
-        tienda_dibujar_icono(&jugador1, fondo_inicial); // <- antes del jugador
+        tienda_dibujar_icono(&jugador1, fondo_inicial); // detras del jugador
 
         Color tinte = WHITE;
         if (jugador1.invul > 0)
@@ -80,17 +81,16 @@ int main()
         if (espadaVisible > 0)
             DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
 
-        tienda_dibujar_menu(&jugador1);   // <- AL FINAL, justo antes de EndDrawing
+        tienda_dibujar_menu(&jugador1); // al final, encima de todo
+
         EndDrawing();
     }
 
+    // ---------- LIBERAR ----------
     tienda_descargar();
     UnloadTexture(fondos[0]);
     UnloadTexture(fondos[1]);
     UnloadTexture(fondos[2]);
     UnloadTexture(jugador_text);
     UnloadTexture(murc_text);
-    UnloadTexture(plat_text);
-    CloseWindow();
-    return 0;
 }
