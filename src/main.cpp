@@ -37,7 +37,7 @@ int main()
         pantallas(&jugador1);
         actualizar_animacion(&jugador1);
         anim_murc();
-        patrulla();
+        
 
         // ---------- DIBUJO ----------
         BeginDrawing();
