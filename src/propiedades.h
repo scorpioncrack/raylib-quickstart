@@ -7,10 +7,12 @@
 #define SALTO 10
 #define GRAVEDAD 0.4F
 #define IFRAME 1.0F
-#define FRAM 4 
-#define DASH SPEED*2.5
-#define DASH_DURACION  0.15F
+#define FRAM 4
+#define DASH SPEED * 2.5
+#define DASH_DURACION 0.15F
 #define DASH_ESPERA 2
+#define VEL_LANZA 5
+#define LANZA_DURACION 5
 
 typedef struct Armas
 {
@@ -72,7 +74,7 @@ Player jugador1 = {
     1,                    // estado
     0,                    // invul
     false,                // volar
-    0                     //sangre
+    0                     // sangre
 };
 
 // ataques enemigos: tipo, rango, color, dano, tiempo
@@ -89,6 +91,7 @@ int numEnemigos = sizeof(lista_enemigos) / sizeof(lista_enemigos[0]);
 
 // armas: tipo, rango, color, dano, tiempo entre ataques (seg)
 Armas espada = {1, {X, Y, 16.0F, 32.0F}, RED, 2, 0.4F};
+Armas lanza = {4, {X, Y, 32.0F, 16.0F},BLUE,8,1.0F};
 
 // objetos con colision
 Objeto escenario[] = {
@@ -100,4 +103,4 @@ Objeto escenario[] = {
 int numObjetos = sizeof(escenario) / sizeof(escenario[0]);
 
 // AREA
-Objeto area1 = {{0, 0, 1080, 1020}, 0, WHITE};
+Objeto lista_areas[] = {{{0, 0, 1080, 1020}, 0, WHITE}};

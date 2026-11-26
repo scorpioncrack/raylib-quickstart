@@ -7,11 +7,11 @@ int main()
     ToggleBorderlessWindowed();
     SearchAndSetResourceDir("resources");
 
-    Texture2D jugador_text = LoadTexture("protagonista/personaje_principal.png"); // <-- hoja nueva
+    Texture2D jugador_text = LoadTexture("protagonista/personaje_principal.png");
     Texture2D fondo_text = LoadTexture("fondo1.png");
     Texture2D plat_text = LoadTexture("plataforma.png");
 
-    SetTextureFilter(jugador_text, TEXTURE_FILTER_BILINEAR); // <-- BILINEAR porque se dibuja escalado
+    SetTextureFilter(jugador_text, TEXTURE_FILTER_BILINEAR);
     SetTargetFPS(60);
 
     switch (jugador1.tipo)
@@ -24,16 +24,17 @@ int main()
     while (!WindowShouldClose())
     {
         // ---------- LÓGICA ----------
+        
         act_jug(&jugador1);
-        actualizar_animacion(&jugador1); // <-- NUEVO
+        actualizar_animacion(&jugador1);
         patrulla();
 
-//dibujar dibujos
+        // dibujar dibujos
         BeginDrawing();
         ClearBackground(GRAY);
         fondo1(fondo_text);
 
-        DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
+        DrawText(TextFormat("vidas %d", jugador1.vida), 200, 200, 40, WHITE);
         for (int i = 0; i < numObjetos; i++)
             textura_plataformas(plat_text, escenario[i].rect);
 
@@ -44,7 +45,7 @@ int main()
                 tinte = Fade(WHITE, 0.3F);
         }
 
-        dibujar_jugador(jugador_text, &jugador1, tinte); // <-- NUEVO (reemplaza el DrawTexturePro viejo)
+        dibujar_jugador(jugador_text, &jugador1, tinte);
 
         for (int i = 0; i < numEnemigos; i++)
         {
@@ -52,9 +53,11 @@ int main()
                 DrawRectangleRec(lista_enemigos[i].base.rec, lista_enemigos[i].color);
         }
 
-        if (espadaVisible > 0)
+        if (armaVisible > 0)
             DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
 
+        if (lanzaDuracion > 0)
+            DrawRectangleRec(lanza.rango, lanza.color);
         EndDrawing();
     }
 
