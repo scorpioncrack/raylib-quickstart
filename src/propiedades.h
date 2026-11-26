@@ -62,6 +62,7 @@ typedef struct Enemigo
     Armas ataque;
 } _enemigo;
 
+
 // jugador
 // pos, rec, velX, velY, saltar, eje, tipo (1 = espada), arma, dir, vida, estado, invul, volar, sangre
 Player jugador1 = {
