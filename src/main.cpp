@@ -39,7 +39,7 @@ int main()
     while (!WindowShouldClose())
     {
         // ---------- ACTUALIZAR ----------
-        tienda_actualizar(&jugador1, fondo_inicial); // siempre, fuera del if
+        tienda_actualizar(&jugador1, fondo_inicial); 
 
         if (!tienda_abierta())
         {

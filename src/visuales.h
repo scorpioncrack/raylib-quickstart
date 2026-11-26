@@ -69,7 +69,7 @@ void cargar(int pan)
     }
 
     // la lanza en vuelo desaparece al cambiar de pantalla
-    lanzaDuracion = 0;
+   // lanzaDuracion = 0;
 }
 
 void pantallas(Player *jugador)
