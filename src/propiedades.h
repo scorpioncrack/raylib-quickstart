@@ -39,6 +39,9 @@ typedef struct Player
     float invul;
     bool volar;
     float sangre;
+//yolopusealvaro
+    int monedas;
+
 } _player;
 
 typedef struct Objeto
@@ -64,9 +67,18 @@ typedef struct Enemigo
 Player jugador1 = {
     {X, Y},
     {X, Y, 64.0F, 64.0F},
-    0, 0, 1, 0, 1,
+    0,
+    0,
+    1,
+    0,
+    1,
     {},
-    1, 5, 1, 0, false, 0};
+    1,
+    5,
+    1,
+    0,
+    false,
+    0};
 
 // ataque de contacto de los enemigos
 Armas contacto = {-1, {X, Y, 48.0F, 48.0F}, RED, 1, 0.0F};
