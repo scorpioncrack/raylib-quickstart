@@ -1,14 +1,21 @@
 // JESUS GMALIEL AVILEZ SUAREZ
 #pragma once
 #include "propiedades.h"
-#include <cmath> // fabsf
+#include <cmath> 
+#define NUM_FONDOS 3
+#define ANCHO_PANTALLA 1920
+#define LARGO_pantalla 1080
+
+Texture2D fondos[NUM_FONDOS];
+int fondo_inicial = 0;
+
+Objeto areas[2];
 
 // variables del jugador que usan act_jug y el dibujado del main
 float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F;
 float tiem = 0.0F;
 int fra = 0;
-int fila_anim = 0;   // 0 quieto, 1 correr, 2 saltar
-
+int fila_anim = 0; // 0 quieto, 1 correr, 2 saltar
 
 // actualizar
 void act_jug(Player *entidad);
@@ -30,14 +37,14 @@ void patrulla();
 void act_jug(Player *entidad)
 {
     // otros
-    int lanza_sangre =0;
+    int lanza_sangre = 0;
     // timers
     timer += GetFrameTime();
     espadaVisible -= GetFrameTime();
     entidad->invul -= GetFrameTime();
     dashEspera -= GetFrameTime();
     dashDuracion -= GetFrameTime();
-       // animacion
+    // animacion
     tiem += GetFrameTime();
     if (tiem >= 0.18F)
     {
@@ -66,9 +73,21 @@ void act_jug(Player *entidad)
             }
         }
     }
-    if (IsKeyPressed(KEY_A))
+        if (IsKeyPressed(KEY_A))
     {
         entidad->volar = !entidad->volar;
+        if (entidad->volar)
+        {
+            // NUEVO: caja baja de 64 a 40, los pies quedan en el mismo lugar
+            entidad->pos.y += 24;
+            entidad->rec.height = 40;
+        }
+        else
+        {
+            entidad->pos.y -= 24;
+            entidad->rec.height = 64;
+        }
+        entidad->rec.y = entidad->pos.y;
     }
     if (IsKeyDown(KEY_LEFT))
         entidad->velX = -SPEED;
@@ -78,7 +97,7 @@ void act_jug(Player *entidad)
     if (entidad->velX != 0)
         entidad->dir = (entidad->velX > 0) ? 1 : -1;
 
-    //habiliades
+    // habiliades
     if (IsKeyPressed(KEY_C))
     {
         if (dashEspera < 0)
@@ -93,13 +112,12 @@ void act_jug(Player *entidad)
     }
     if (IsKeyPressed(KEY_F))
     {
-        if (entidad->sangre>=1)
+        if (entidad->sangre >= 1)
         {
-            //lanza_sangre();
+            // lanza_sangre();
         }
-        
     }
-    
+
     // ataque del jugador
     if (IsKeyPressed(KEY_X))
     {
@@ -229,7 +247,6 @@ void dash(Player *entidad)
 
 void lanza_sangre()
 {
-
 }
 // ==================== COMBATE ====================
 
@@ -258,15 +275,15 @@ void impacto(Player *jugador, Enemigo *enemigo)
                 danio = jugador->arma.dano;
                 break;
             }
-            if (jugador1.sangre+0.3<=1)
+            if (jugador1.sangre + 0.3 <= 1)
             {
-                jugador1.sangre+=.3;
+                jugador1.sangre += .3;
             }
             else
             {
-                jugador1.sangre=1.0;
+                jugador1.sangre = 1.0;
             }
-            
+
             enemigo->base.vida -= danio;
             if (enemigo->base.vida <= 0)
                 enemigo->estado = 0;
