@@ -3,7 +3,12 @@
 #include "eventos.h"
 #define FILAS 3
 #define ESCALA_SPRITE 0.8f
-enum { FILA_QUIETO = 0, FILA_CORRER = 1, FILA_SALTO = 2 };
+enum
+{
+    FILA_QUIETO = 0,
+    FILA_CORRER = 1,
+    FILA_SALTO = 2
+};
 
 // murcielago (1 fila, 4 cuadros)
 #define FMUR 4
@@ -98,9 +103,12 @@ void fondo1(Texture2D fondo_text)
 void actualizar_animacion(Player *j)
 {
     int nueva;
-    if (j->volar || j->saltar != 1)  nueva = FILA_SALTO;
-    else if (j->velX != 0)           nueva = FILA_CORRER;
-    else                             nueva = FILA_QUIETO;
+    if (j->volar || j->saltar != 1)
+        nueva = FILA_SALTO;
+    else if (j->velX != 0)
+        nueva = FILA_CORRER;
+    else
+        nueva = FILA_QUIETO;
 
     if (nueva != fila_anim)
     {
@@ -111,11 +119,16 @@ void actualizar_animacion(Player *j)
 
     if (fila_anim == FILA_SALTO)
     {
-        if (j->volar)             fra = 2;
-        else if (j->velY < -5)    fra = 0;
-        else if (j->velY < -1.5f) fra = 1;
-        else if (j->velY < 1.5f)  fra = 2;
-        else                      fra = 3;
+        if (j->volar)
+            fra = 2;
+        else if (j->velY < -5)
+            fra = 0;
+        else if (j->velY < -1.5f)
+            fra = 1;
+        else if (j->velY < 1.5f)
+            fra = 2;
+        else
+            fra = 3;
     }
     else
     {
@@ -169,4 +182,44 @@ void dibujar_murc(Texture2D tex, Player *j, Color tinte)
                       j->rec.y + j->rec.height / 2 - h / 2, w, h};
 
     DrawTexturePro(tex, ori, dest, Vector2{0, 0}, 0.0f, tinte);
+}
+
+void fondo_y_murc(Texture2D plat_text, Texture2D murc_text, Texture2D jugador_text)
+{
+    BeginDrawing();
+    ClearBackground(GRAY);
+
+
+    fondo1(fondos[fondo_inicial]);
+
+    DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
+    for (int i = 0; i < numObjetos; i++)
+        textura_plataformas(plat_text, escenario[i].rect);
+
+    Color tinte = WHITE;
+    if (jugador1.invul > 0)
+    {
+        if ((int)(jugador1.invul * 10) % 2 == 0)
+            tinte = Fade(WHITE, 0.3F);
+    }
+
+    if (jugador1.volar)
+    {
+        dibujar_murc(murc_text, &jugador1, tinte);
+    }
+    else
+    {
+        dibujar_jugador(jugador_text, &jugador1, tinte);
+    }
+
+    for (int i = 0; i < numEnemigos; i++)
+    {
+        if (lista_enemigos[i].estado)
+            DrawRectangleRec(lista_enemigos[i].base.rec, lista_enemigos[i].color);
+    }
+
+    if (espadaVisible > 0)
+        DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
+
+    EndDrawing();
 }
