@@ -24,7 +24,7 @@ void corazones_vida(Player *vida)
 {
     int maxVidas = 5;
     float margen = 20.0f;     // Distancia desde la esquina superior izquierda
-    float tamano = 100.0f;     // Ancho y alto de cada corazon
+    float tamano = 100.0f;    // Ancho y alto de cada corazon
     float separacion = 45.0f; // Espacio entre cada corazon
 
     for (int i = 0; i < maxVidas; i++)
@@ -69,7 +69,7 @@ void cargar(int pan)
     }
 
     // la lanza en vuelo desaparece al cambiar de pantalla
-   // lanzaDuracion = 0;
+    lanzaDuracion = 0;
 }
 
 void pantallas(Player *jugador)
@@ -204,43 +204,4 @@ void dibujar_murc(Texture2D tex, Player *j, Color tinte)
                       j->rec.y + j->rec.height / 2 - h / 2, w, h};
 
     DrawTexturePro(tex, ori, dest, Vector2{0, 0}, 0.0f, tinte);
-}
-
-void fondo_y_murc(Texture2D plat_text, Texture2D murc_text, Texture2D jugador_text)
-{
-    BeginDrawing();
-    ClearBackground(GRAY);
-
-    fondo1(fondos[fondo_inicial]);
-
-    DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
-    for (int i = 0; i < numObjetos; i++)
-        textura_plataformas(plat_text, escenario[i].rect);
-
-    Color tinte = WHITE;
-    if (jugador1.invul > 0)
-    {
-        if ((int)(jugador1.invul * 10) % 2 == 0)
-            tinte = Fade(WHITE, 0.3F);
-    }
-
-    if (jugador1.volar)
-    {
-        dibujar_murc(murc_text, &jugador1, tinte);
-    }
-    else
-    {
-        dibujar_jugador(jugador_text, &jugador1, tinte);
-    }
-
-    for (int i = 0; i < numEnemigos; i++)
-    {
-        if (lista_enemigos[i].estado)
-            DrawRectangleRec(lista_enemigos[i].base.rec, lista_enemigos[i].color);
-    }
-
-    if (espadaVisible > 0)
-        DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
-
-    EndDrawing();
 }

@@ -1,8 +1,8 @@
 // JESUS GMALIEL AVILEZ SUAREZ
 #pragma once
 #include "propiedades.h"
-#include "mas.h"   // NUEVO: libreria de la tienda (si se llama mas.h, pon "mas.h")
-#include <cmath> 
+#include "mas.h" // libreria de la tienda (HAB_VOLAR, HAB_DASH, HAB_SANGRE, tienda_tiene)
+#include <cmath> // fabsf
 #define NUM_FONDOS 3
 #define ANCHO_PANTALLA 1920
 #define LARGO_pantalla 1080
@@ -13,7 +13,8 @@ int fondo_inicial = 0;
 Objeto areas[2];
 
 // variables del jugador que usan act_jug y el dibujado del main
-float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F;
+float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F, lanzaDuracion = 0.0F;
+int lanzaDir = 1; // direccion en la que va la lanza (se fija al lanzarla)
 float tiem = 0.0F;
 int fra = 0;
 int fila_anim = 0; // 0 quieto, 1 correr, 2 saltar
@@ -25,6 +26,9 @@ void movimiento(Player *entidad);
 void objetos(Player *entidad);
 void plataforma(Player *entidad, Objeto *plataforma);
 void dash(Player *entidad);
+// habilidades
+void lanza_sangre();
+void curar(Player &entidad);
 // combate
 void ataque(Player *jugador);
 void impacto(Player *jugador, Enemigo *enemigo);
@@ -37,35 +41,32 @@ void patrulla();
 
 void act_jug(Player *entidad)
 {
-    // otros
-    int lanza_sangre = 0;
     // timers
     timer += GetFrameTime();
     espadaVisible -= GetFrameTime();
     entidad->invul -= GetFrameTime();
     dashEspera -= GetFrameTime();
     dashDuracion -= GetFrameTime();
-    // animacion
-    tiem += GetFrameTime();
-    if (tiem >= 0.18F)
-    {
-        tiem = 0.0F;
-        fra = (fra + 1) % FRAM;
-    }
+    lanzaDuracion -= GetFrameTime();
+
+    // entradas del control (la animacion la maneja actualizar_animacion)
+    float ejeX = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X);
+    float ejeY = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y);
+
     // movimiento del jugador
     entidad->velX = 0;
     if (entidad->volar)
     {
         entidad->velY = 0;
-        if (IsKeyDown(KEY_DOWN))
+        if (ejeY > 0.3F || IsKeyDown(KEY_DOWN))
             entidad->velY = SPEED;
 
-        if (IsKeyDown(KEY_UP))
+        if (ejeY < -0.3F || IsKeyDown(KEY_UP))
             entidad->velY = -SPEED;
     }
     else
     {
-        if (IsKeyPressed(KEY_Z))
+        if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN) || IsKeyPressed(KEY_Z))
         {
             if (entidad->saltar == 1)
             {
@@ -74,12 +75,14 @@ void act_jug(Player *entidad)
             }
         }
     }
-        if (IsKeyPressed(KEY_A) && tienda_tiene(HAB_VOLAR))   // NUEVO: bloqueado hasta comprarlo
+
+    // activar / desactivar vuelo (bloqueado hasta comprarlo en la tienda)
+    if ((IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT) || IsKeyPressed(KEY_A)) && tienda_tiene(HAB_VOLAR))
     {
         entidad->volar = !entidad->volar;
         if (entidad->volar)
         {
-            // NUEVO: caja baja de 64 a 40, los pies quedan en el mismo lugar
+            // caja baja de 64 a 40, los pies quedan en el mismo lugar
             entidad->pos.y += 24;
             entidad->rec.height = 40;
         }
@@ -90,16 +93,17 @@ void act_jug(Player *entidad)
         }
         entidad->rec.y = entidad->pos.y;
     }
-    if (IsKeyDown(KEY_LEFT))
+
+    if (ejeX < -0.3F || IsKeyDown(KEY_LEFT))
         entidad->velX = -SPEED;
-    if (IsKeyDown(KEY_RIGHT))
+    if (ejeX > 0.3F || IsKeyDown(KEY_RIGHT))
         entidad->velX = SPEED;
 
     if (entidad->velX != 0)
         entidad->dir = (entidad->velX > 0) ? 1 : -1;
 
-    // habiliades
-    if (IsKeyPressed(KEY_C) && tienda_tiene(HAB_DASH))   // NUEVO: bloqueado hasta comprarlo
+    // habilidades: dash (bloqueado hasta comprarlo)
+    if ((IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) || IsKeyPressed(KEY_C)) && tienda_tiene(HAB_DASH))
     {
         if (dashEspera < 0)
         {
@@ -111,16 +115,30 @@ void act_jug(Player *entidad)
     {
         dash(entidad);
     }
-    if (IsKeyPressed(KEY_F) && tienda_tiene(HAB_SANGRE))   // NUEVO: bloqueado hasta comprarlo
+
+    // habilidades: lanza de sangre (bloqueada hasta comprarla)
+    if ((IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_UP) || IsKeyPressed(KEY_F)) && tienda_tiene(HAB_SANGRE))
     {
-        if (entidad->sangre >= 1)
+        if (entidad->sangre >= 1 && lanzaDuracion <= 0)
         {
-            // lanza_sangre();
+            entidad->sangre -= 1.0F;
+            lanzaDuracion = LANZA_DURACION;
+            lanzaDir = entidad->dir;
+
+            if (lanzaDir == 1)
+                lanza.rango.x = entidad->pos.x + entidad->rec.width;
+            else
+                lanza.rango.x = entidad->pos.x - lanza.rango.width;
+            lanza.rango.y = entidad->pos.y + 30.0F;
         }
+    }
+    if (lanzaDuracion > 0)
+    {
+        lanza_sangre();
     }
 
     // ataque del jugador
-    if (IsKeyPressed(KEY_X))
+    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_LEFT) || IsKeyPressed(KEY_X))
     {
         if (timer >= entidad->arma.tiempo)
         {
@@ -134,6 +152,7 @@ void act_jug(Player *entidad)
     enemigo_ataque(*entidad);
     movimiento(entidad);
 }
+
 // ==================== MOVIMIENTO Y COLISIONES ====================
 void movimiento(Player *entidad)
 {
@@ -231,11 +250,11 @@ void plataforma(Player *entidad, Objeto *plataforma)
         }
     }
 }
-// ==================== habilidades ====================
+
+// ==================== HABILIDADES ====================
 
 void dash(Player *entidad)
 {
-
     if (entidad->dir == 1)
     {
         entidad->velX = DASH;
@@ -248,12 +267,50 @@ void dash(Player *entidad)
 
 void lanza_sangre()
 {
+    // avanzar en la direccion fijada al lanzar
+    lanza.rango.x += lanzaDir * VEL_LANZA;
+
+    // chocar con paredes/plataformas
+    for (int i = 0; i < numObjetos; i++)
+    {
+        if (escenario[i].blocking && CheckCollisionRecs(lanza.rango, escenario[i].rect))
+        {
+            lanzaDuracion = 0;
+            return;
+        }
+    }
+
+    // chocar con enemigos
+    for (int i = 0; i < numEnemigos; i++)
+    {
+        Enemigo *enemigo = &lista_enemigos[i];
+        if (enemigo->estado)
+        {
+            if (CheckCollisionRecs(lanza.rango, enemigo->base.rec))
+            {
+                enemigo->base.vida -= lanza.dano;
+                if (enemigo->base.vida <= 0)
+                {
+                    enemigo->estado = 0;
+                    jugador1.monedas += 5; // monedas tambien al matar con la lanza
+                }
+                lanzaDuracion = 0; // la lanza desaparece al golpear
+                return;
+            }
+        }
+    }
 }
+
+// curar (por referencia para que de verdad modifique al jugador)
+void curar(Player &entidad)
+{
+    entidad.vida += 1;
+}
+
 // ==================== COMBATE ====================
 
 void ataque(Player *atacante)
 {
-
     if (atacante->dir == 1)
         atacante->arma.rango.x = atacante->pos.x + atacante->rec.width;
     else
@@ -264,7 +321,6 @@ void ataque(Player *atacante)
 
 void impacto(Player *jugador, Enemigo *enemigo)
 {
-
     if (CheckCollisionRecs(jugador->arma.rango, enemigo->base.rec))
     {
         if (enemigo->estado)
@@ -276,6 +332,8 @@ void impacto(Player *jugador, Enemigo *enemigo)
                 danio = jugador->arma.dano;
                 break;
             }
+
+            // cada golpe de espada recarga sangre
             if (jugador1.sangre + 0.3 <= 1)
             {
                 jugador1.sangre += .3;
@@ -289,7 +347,7 @@ void impacto(Player *jugador, Enemigo *enemigo)
             if (enemigo->base.vida <= 0)
             {
                 enemigo->estado = 0;
-                jugador1.monedas += 5;   // NUEVO: monedas al matar un enemigo
+                jugador1.monedas += 5; // monedas al matar un enemigo
             }
         }
     }
