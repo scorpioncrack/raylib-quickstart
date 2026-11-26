@@ -46,7 +46,6 @@ typedef struct Objeto
     Rectangle rect;
     int blocking;
     Color color;
-    int zona;
 } _objeto;
 
 typedef struct Enemigo
@@ -61,35 +60,20 @@ typedef struct Enemigo
 } _enemigo;
 
 // jugador
+// pos, rec, velX, velY, saltar, eje, tipo (1 = espada), arma, dir, vida, estado, invul, volar, sangre
 Player jugador1 = {
-<<<<<<< HEAD
-    {X, Y},               // pos
-    {X, Y, 64.0F, 64.0F}, // rec
-    0,                    // velX
-    0,                    // velY
-    1,                    // saltar
-    0,                    // eje
-    1,                    // tipo (arma: 1 = espada)
-    {},                   // arma (la llena el switch del main)
-    1,                    // dir (1 = derecha)
-    5,                    // vida
-    1,                    // estado
-    0,                    // invul
-    false,                // volar
-    0                     // sangre
-};
-=======
     {X, Y},
     {X, Y, 64.0F, 64.0F},
     0, 0, 1, 0, 1,
     {},
     1, 5, 1, 0, false, 0};
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
 
+// ataque de contacto de los enemigos
 Armas contacto = {-1, {X, Y, 48.0F, 48.0F}, RED, 1, 0.0F};
 
+// armas: tipo, rango, color, dano, tiempo entre ataques (seg)
 Armas espada = {1, {X, Y, 16.0F, 32.0F}, RED, 2, 0.4F};
-Armas lanza = {4, {X, Y, 32.0F, 16.0F},BLUE,8,1.0F};
+Armas lanza = {4, {X, Y, 32.0F, 16.0F}, BLUE, 8, 1.0F};
 
 // pantalla 0
 Objeto esc0[] = {
@@ -98,10 +82,6 @@ Objeto esc0[] = {
     {{400, 400, 100, 100}, 1, RED},
     {{600, 200, 100, 100}, 1, RED}};
 
-<<<<<<< HEAD
-// AREA
-Objeto lista_areas[] = {{{0, 0, 1080, 1020}, 0, WHITE}};
-=======
 Enemigo ene0[] = {
     {{{800, 652}, {800, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 3}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto},
     {{{300, 652}, {300, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 5}, 1, GREEN, 200.0F, 0.0F, 3.0F, contacto}};
@@ -114,7 +94,7 @@ Objeto esc1[] = {
 Enemigo ene1[] = {
     {{{900, 652}, {900, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 3}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto}};
 
-// pantalla 2  (NUEVO: si ya tienes tu esc2/ene2, deja los tuyos)
+// pantalla 2
 Objeto esc2[] = {
     {{0, 700, 2160, 200}, 1, BLACK},
     {{500, 500, 200, 100}, 1, BLUE}};
@@ -122,11 +102,8 @@ Objeto esc2[] = {
 Enemigo ene2[] = {
     {{{1000, 652}, {1000, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 3}, 1, GREEN, 150.0F, 0.0F, 2.0F, contacto}};
 
-// los que usa el juego
+// los que usa el juego (cambian con cargar())
 Objeto *escenario = esc0;
 int numObjetos = sizeof(esc0) / sizeof(esc0[0]);
 Enemigo *lista_enemigos = ene0;
 int numEnemigos = sizeof(ene0) / sizeof(ene0[0]);
-
-Objeto area[] = {{{0, 0, 1080, 1020}, 0, WHITE}};
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d

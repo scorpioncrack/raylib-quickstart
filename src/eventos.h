@@ -1,7 +1,7 @@
 // JESUS GMALIEL AVILEZ SUAREZ
 #pragma once
 #include "propiedades.h"
-#include <cmath> 
+#include <cmath> // fabsf
 #define NUM_FONDOS 3
 #define ANCHO_PANTALLA 1920
 #define LARGO_pantalla 1080
@@ -12,7 +12,7 @@ int fondo_inicial = 0;
 Objeto areas[2];
 
 // variables del jugador que usan act_jug y el dibujado del main
-float timer = 100.0F, armaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F, lanzaDuracion = 0.0F;
+float timer = 100.0F, espadaVisible = 0.0F, dashEspera = 0.0F, dashDuracion = 0.0F, lanzaDuracion = 0.0F;
 int lanzaDir = 1; // direccion en la que va la lanza (se fija al lanzarla)
 float tiem = 0.0F;
 int fra = 0;
@@ -25,7 +25,6 @@ void movimiento(Player *entidad);
 void objetos(Player *entidad);
 void plataforma(Player *entidad, Objeto *plataforma);
 void dash(Player *entidad);
-
 // combate
 void ataque(Player *jugador);
 void impacto(Player *jugador, Enemigo *enemigo);
@@ -39,44 +38,32 @@ void patrulla();
 
 void act_jug(Player *entidad)
 {
-<<<<<<< HEAD
-=======
-    // otros
-    int lanza_sangre = 0;
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
     // timers
     timer += GetFrameTime();
-    armaVisible -= GetFrameTime();
+    espadaVisible -= GetFrameTime();
     entidad->invul -= GetFrameTime();
     dashEspera -= GetFrameTime();
     dashDuracion -= GetFrameTime();
-<<<<<<< HEAD
     lanzaDuracion -= GetFrameTime();
 
-=======
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
-    // animacion
-    tiem += GetFrameTime();
-    if (tiem >= 0.18F)
-    {
-        tiem = 0.0F;
-        fra = (fra + 1) % FRAM;
-    }
+    // entradas del control (la animacion la maneja actualizar_animacion)
+    float ejeX = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X);
+    float ejeY = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y);
 
     // movimiento del jugador
     entidad->velX = 0;
     if (entidad->volar)
     {
         entidad->velY = 0;
-        if ((GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y) > 0.3F)||IsKeyDown(KEY_LEFT))
+        if (ejeY > 0.3F || IsKeyDown(KEY_DOWN))
             entidad->velY = SPEED;
 
-        if ((GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y) < -0.3F)||IsKeyDown(KEY_RIGHT))
+        if (ejeY < -0.3F || IsKeyDown(KEY_UP))
             entidad->velY = -SPEED;
     }
     else
     {
-        if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)||IsKeyPressed(KEY_Z))
+        if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN) || IsKeyPressed(KEY_Z))
         {
             if (entidad->saltar == 1)
             {
@@ -85,16 +72,14 @@ void act_jug(Player *entidad)
             }
         }
     }
-<<<<<<< HEAD
-    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)||IsKeyPressed(KEY_A))
-=======
-        if (IsKeyPressed(KEY_A))
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
+
+    // activar / desactivar vuelo (murcielago)
+    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT) || IsKeyPressed(KEY_A))
     {
         entidad->volar = !entidad->volar;
         if (entidad->volar)
         {
-            // NUEVO: caja baja de 64 a 40, los pies quedan en el mismo lugar
+            // caja baja de 64 a 40, los pies quedan en el mismo lugar
             entidad->pos.y += 24;
             entidad->rec.height = 40;
         }
@@ -105,21 +90,17 @@ void act_jug(Player *entidad)
         }
         entidad->rec.y = entidad->pos.y;
     }
-    if (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X) < -0.3F)
+
+    if (ejeX < -0.3F || IsKeyDown(KEY_LEFT))
         entidad->velX = -SPEED;
-    if (GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X) > 0.3F)
+    if (ejeX > 0.3F || IsKeyDown(KEY_RIGHT))
         entidad->velX = SPEED;
 
     if (entidad->velX != 0)
         entidad->dir = (entidad->velX > 0) ? 1 : -1;
 
-<<<<<<< HEAD
-    // habilidades
-    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)||IsKeyPressed(KEY_C))
-=======
-    // habiliades
-    if (IsKeyPressed(KEY_C))
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
+    // habilidades: dash
+    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT) || IsKeyPressed(KEY_C))
     {
         if (dashEspera < 0)
         {
@@ -132,44 +113,35 @@ void act_jug(Player *entidad)
         dash(entidad);
     }
 
-    // lanza
-    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_UP)||IsKeyPressed(KEY_F))
+    // habilidades: lanza de sangre
+    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_UP) || IsKeyPressed(KEY_F))
     {
-        if (entidad->sangre >= 1)
+        if (entidad->sangre >= 1 && lanzaDuracion <= 0)
         {
-<<<<<<< HEAD
-            if (lanzaDuracion <= 0)
-            {
-                entidad->sangre -= 1.0F;
-                lanzaDuracion = LANZA_DURACION;
-                lanzaDir = entidad->dir;
+            entidad->sangre -= 1.0F;
+            lanzaDuracion = LANZA_DURACION;
+            lanzaDir = entidad->dir;
 
-                if (lanzaDir == 1)
-                    lanza.rango.x = entidad->pos.x + entidad->rec.width;
-                else
-                    lanza.rango.x = entidad->pos.x - lanza.rango.width;
-                lanza.rango.y = entidad->pos.y + 30.0F;
-            }
+            if (lanzaDir == 1)
+                lanza.rango.x = entidad->pos.x + entidad->rec.width;
+            else
+                lanza.rango.x = entidad->pos.x - lanza.rango.width;
+            lanza.rango.y = entidad->pos.y + 30.0F;
         }
     }
     if (lanzaDuracion > 0)
     {
         lanza_sangre();
     }
-=======
-            // lanza_sangre();
-        }
-    }
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
 
     // ataque del jugador
-    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_LEFT))
+    if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_LEFT) || IsKeyPressed(KEY_X))
     {
         if (timer >= entidad->arma.tiempo)
         {
             ataque(entidad);
             timer = 0.0F;
-            armaVisible = 0.15F;
+            espadaVisible = 0.15F;
         }
     }
 
@@ -186,11 +158,13 @@ void movimiento(Player *entidad)
     entidad->rec.x = entidad->pos.x;
     entidad->eje = 1;
     objetos(entidad);
+
     // movimiento en y
     if (!entidad->volar)
     {
         entidad->velY += GRAVEDAD;
     }
+
     entidad->pos.y += entidad->velY;
     entidad->rec.y = entidad->pos.y;
     entidad->eje = 0;
@@ -210,6 +184,7 @@ void plataforma(Player *entidad, Objeto *plataforma)
     float dir;
     int pasos;
     bool seguir;
+
     if (CheckCollisionRecs(entidad->rec, plataforma->rect))
     {
         if (plataforma->blocking)
@@ -289,7 +264,6 @@ void dash(Player *entidad)
 
 void lanza_sangre()
 {
-<<<<<<< HEAD
     // avanzar en la direccion fijada al lanzar
     lanza.rango.x += lanzaDir * VEL_LANZA;
 
@@ -311,17 +285,14 @@ void lanza_sangre()
         {
             if (CheckCollisionRecs(lanza.rango, enemigo->base.rec))
             {
-
                 enemigo->base.vida -= lanza.dano;
                 if (enemigo->base.vida <= 0)
                     enemigo->estado = 0;
-                lanzaDuracion = 0;
+                lanzaDuracion = 0; // la lanza desaparece al golpear
                 return;
             }
         }
     }
-=======
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
 }
 
 // ==================== COMBATE ====================
@@ -342,17 +313,17 @@ void impacto(Player *jugador, Enemigo *enemigo)
     {
         if (enemigo->estado)
         {
-            if (jugador1.sangre + 0.3 <= 1)
+            int danio = 0;
+            switch (jugador->arma.tipo)
             {
-<<<<<<< HEAD
-=======
             case 1:
                 danio = jugador->arma.dano;
                 break;
             }
+
+            // cada golpe de espada recarga sangre
             if (jugador1.sangre + 0.3 <= 1)
             {
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
                 jugador1.sangre += .3;
             }
             else
@@ -360,11 +331,7 @@ void impacto(Player *jugador, Enemigo *enemigo)
                 jugador1.sangre = 1.0;
             }
 
-<<<<<<< HEAD
-            enemigo->base.vida -= jugador->arma.dano;
-=======
             enemigo->base.vida -= danio;
->>>>>>> 031580c3266e08b2864a664833f3900ab80e3b6d
             if (enemigo->base.vida <= 0)
                 enemigo->estado = 0;
         }

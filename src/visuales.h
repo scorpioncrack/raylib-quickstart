@@ -5,7 +5,7 @@
 #define ESCALA_SPRITE 0.8f
 enum { FILA_QUIETO = 0, FILA_CORRER = 1, FILA_SALTO = 2 };
 
-// NUEVO: murcielago (1 fila, 4 cuadros)
+// murcielago (1 fila, 4 cuadros)
 #define FMUR 4
 #define MURW 90.0f // ancho al dibujar, sube o baja para ajustar
 float tmu = 0.0f;
@@ -40,12 +40,14 @@ void cargar(int pan)
         lista_enemigos = ene2;
         numEnemigos = sizeof(ene2) / sizeof(ene2[0]);
     }
+
+    // la lanza en vuelo desaparece al cambiar de pantalla
+    lanzaDuracion = 0;
 }
 
 void pantallas(Player *jugador)
 {
-    int anchoReal = GetScreenWidth();
-
+    // salir por la derecha
     if (CheckCollisionRecs(areas[1].rect, jugador->rec))
     {
         if (fondo_inicial < NUM_FONDOS - 1)
@@ -57,14 +59,19 @@ void pantallas(Player *jugador)
         }
         else
         {
-            jugador->rec.x = areas[1].rect.x - jugador->rec.width;
+            // ultima pantalla: no dejar pasar
+            jugador->pos.x = areas[1].rect.x - jugador->rec.width;
+            jugador->rec.x = jugador->pos.x;
         }
     }
 
+    // salir por la izquierda
     if (fondo_inicial == 0)
     {
+        // primera pantalla: no dejar pasar
         if (jugador->rec.x < 0)
         {
+            jugador->pos.x = 0;
             jugador->rec.x = 0;
         }
     }
@@ -72,7 +79,7 @@ void pantallas(Player *jugador)
     {
         if (CheckCollisionRecs(areas[0].rect, jugador->rec))
         {
-            jugador->pos.x = anchoReal - jugador->rec.width - 40;
+            jugador->pos.x = ANCHO_PANTALLA - jugador->rec.width - 40;
             jugador->rec.x = jugador->pos.x;
             fondo_inicial--;
             cargar(fondo_inicial);
@@ -104,11 +111,11 @@ void actualizar_animacion(Player *j)
 
     if (fila_anim == FILA_SALTO)
     {
-        if (j->volar)            fra = 2;
-        else if (j->velY < -5)   fra = 0;
+        if (j->volar)             fra = 2;
+        else if (j->velY < -5)    fra = 0;
         else if (j->velY < -1.5f) fra = 1;
-        else if (j->velY < 1.5f) fra = 2;
-        else                     fra = 3;
+        else if (j->velY < 1.5f)  fra = 2;
+        else                      fra = 3;
     }
     else
     {
@@ -122,7 +129,7 @@ void actualizar_animacion(Player *j)
     }
 }
 
-// NUEVO: aleteo del murcielago
+// aleteo del murcielago
 void anim_murc()
 {
     tmu += GetFrameTime();
@@ -148,7 +155,7 @@ void dibujar_jugador(Texture2D tex, Player *j, Color tinte)
     DrawTexturePro(tex, ori, dest, Vector2{0, 0}, 0.0f, tinte);
 }
 
-// NUEVO: dibuja el murcielago centrado en la caja
+// dibuja el murcielago centrado en la caja
 void dibujar_murc(Texture2D tex, Player *j, Color tinte)
 {
     float anc = tex.width / (float)FMUR;
