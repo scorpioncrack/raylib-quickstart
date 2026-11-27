@@ -1,6 +1,7 @@
 #include "eventos.h"
 #include "visuales.h"
 #include "menu.h"
+#include "sonido.h"
 
 int main()
 {
@@ -8,6 +9,7 @@ int main()
     ToggleBorderlessWindowed();
     SearchAndSetResourceDir("resources");
     SetExitKey(KEY_NULL);
+    sonido_iniciar();
 
     Texture2D jugador_text = LoadTexture("protagonista/personaje_principal.png");
     Texture2D murc_text = LoadTexture("protagonista/personaje_volar.png");
@@ -40,6 +42,11 @@ int main()
     while (!WindowShouldClose() && !salir)
     {
         // ---------- ACTUALIZAR ----------
+        sonido_actualizar();
+
+        // música según la pantalla (si ya suena esa, no se reinicia)
+        musica_tocar(estado == ESTADO_JUEGO ? "castillo" : "menu");
+
         switch (estado)
         {
         case ESTADO_MENU:
@@ -64,11 +71,12 @@ int main()
 
                 if (!tienda_abierta())
                 {
+
                     act_jug(&jugador1);
                     pantallas(&jugador1);
                     actualizar_animacion(&jugador1);
                     anim_murc();
-                    
+
                 }
             }
             break;
@@ -100,7 +108,7 @@ int main()
             for (int i = 0; i < numObjetos; i++)
                 textura_plataformas(plat_text, escenario[i].rect);
 
-            tienda_dibujar_icono(&jugador1, fondo_inicial); 
+            tienda_dibujar_icono(&jugador1, fondo_inicial);
 
             Color tinte = WHITE;
             if (jugador1.invul > 0)
@@ -126,7 +134,7 @@ int main()
             if (lanzaDuracion > 0)
                 DrawRectangleRec(lanza.rango, lanza.color);
 
-            tienda_dibujar_menu(&jugador1); 
+            tienda_dibujar_menu(&jugador1);
             break;
         }
         }
@@ -135,6 +143,7 @@ int main()
     }
 
     // ---------- LIBERAR ----------
+    sonido_cerrar();
     tienda_descargar();
     UnloadTexture(fondos[0]);
     UnloadTexture(fondos[1]);
