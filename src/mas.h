@@ -5,7 +5,7 @@
 // ---------- configuracion ----------
 #define PANTALLA_TIENDA 0 // pantalla donde aparece (0 = la de inicio)
 
-enum { HAB_DASH = 0, HAB_VOLAR, HAB_SANGRE, NUM_HAB };
+enum { HAB_DASH = 0, HAB_VOLAR, HAB_SANGRE, HAB_CURAR, HAB_FUERZA, NUM_HAB };
 
 typedef struct Habilidad
 {
@@ -17,9 +17,11 @@ typedef struct Habilidad
 
 // ---------- datos ----------
 static Habilidad habilidades[NUM_HAB] = {
-    {"Dash",         "Impulso rapido hacia adelante (C)",  10, false},
-    {"Murcielago",   "Transformate y vuela (A)",           20, false},
-    {"Lanza sangre", "Dispara un proyectil de sangre (F)", 30, false}};
+    {"Dash",            "Impulso rapido hacia adelante (C)",       10, false},
+    {"Murcielago",      "Transformate y vuela (A)",                20, false},
+    {"Lanza sangre",    "Dispara un proyectil de sangre (F)",      30, false},
+    {"Curacion",        "Recupera 3 de vida, cuesta 2 sangre (S)", 40, false},
+    {"Fortalecimiento", "Mas dano 15 seg, cuesta 1 sangre (D)",    50, false}};
 
 // parada sobre el suelo (suelo en y = 700, 572 + 128 = 700)
 static Rectangle tiendaIcono = {700, 572, 128, 128};
@@ -111,7 +113,7 @@ static void tienda_dibujar_menu(Player *j)
     int sw = GetScreenWidth(), sh = GetScreenHeight();
     DrawRectangle(0, 0, sw, sh, Fade(BLACK, 0.6F));
 
-    Rectangle panel = {sw / 2.0F - 350, sh / 2.0F - 220, 700, 440};
+    Rectangle panel = {sw / 2.0F - 350, sh / 2.0F - 320, 700, 640};
     DrawRectangleRec(panel, Fade(DARKGRAY, 0.95F));
     DrawRectangleLinesEx(panel, 4, GOLD);
 
@@ -125,7 +127,14 @@ static void tienda_dibujar_menu(Player *j)
         int y = (int)panel.y + 100 + i * 90;
 
         Rectangle fila = {panel.x + 20, (float)y, panel.width - 40, 78};
-        DrawRectangleRec(fila, (i == tiendaSel) ? Fade(GOLD, 0.35F) : Fade(BLACK, 0.4F));
+
+        Color colorFila;
+        if (i == tiendaSel)
+            colorFila = Fade(GOLD, 0.35F);
+        else
+            colorFila = Fade(BLACK, 0.4F);
+        DrawRectangleRec(fila, colorFila);
+
         if (i == tiendaSel)
             DrawRectangleLinesEx(fila, 2, GOLD);
 
@@ -133,12 +142,20 @@ static void tienda_dibujar_menu(Player *j)
         DrawText(h->descripcion, (int)fila.x + 15, y + 46, 20, LIGHTGRAY);
 
         if (h->comprada)
+        {
             DrawText("COMPRADO", (int)fila.x + 480, y + 25, 26, GREEN);
+        }
         else
-            DrawText(TextFormat("%d $", h->precio), (int)fila.x + 520, y + 25, 28,
-                     (j->monedas >= h->precio) ? YELLOW : RED);
+        {
+            Color colorPrecio;
+            if (j->monedas >= h->precio)
+                colorPrecio = YELLOW;
+            else
+                colorPrecio = RED;
+            DrawText(TextFormat("%d $", h->precio), (int)fila.x + 520, y + 25, 28, colorPrecio);
+        }
     }
 
     DrawText("ARRIBA/ABAJO: elegir   ENTER: comprar   E: salir",
-             (int)panel.x + 30, (int)panel.y + 400, 20, LIGHTGRAY);
+             (int)panel.x + 30, (int)panel.y + 600, 20, LIGHTGRAY);
 }

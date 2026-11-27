@@ -13,6 +13,12 @@
 #define DASH_ESPERA 2
 #define VEL_LANZA 5
 #define LANZA_DURACION 5
+#define FORT_DURACION 15.0F
+#define FUERZA 1.25F
+#define SANGRE_MAX 3.0F
+#define VIDA_MAX 5
+#define COSTO_CURAR 2.0F
+#define CURA_VIDA 3
 
 typedef struct Armas
 {
@@ -94,8 +100,8 @@ Objeto esc0[] = {
     {{600, 200, 100, 100}, 1, RED}};
 
 Enemigo ene0[] = {
-    {{{800, 652}, {800, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 3}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto},
-    {{{300, 652}, {300, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 5}, 1, GREEN, 200.0F, 0.0F, 3.0F, contacto}};
+    {{{800, 652}, {800, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 20}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto},
+    {{{300, 652}, {300, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 15}, 1, GREEN, 200.0F, 0.0F, 3.0F, contacto}};
 
 // pantalla 1
 Objeto esc1[] = {
@@ -103,7 +109,7 @@ Objeto esc1[] = {
     {{300, 500, 150, 50}, 1, BLUE}};
 
 Enemigo ene1[] = {
-    {{{900, 652}, {900, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 3}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto}};
+    {{{900, 652}, {900, 652, 48.0F, 48.0F}, 0, 0, 0, 0, 0, {}, 1, 10}, 1, WHITE, 150.0F, 0.0F, 2.0F, contacto}};
 
 // pantalla 2
 Objeto esc2[] = {

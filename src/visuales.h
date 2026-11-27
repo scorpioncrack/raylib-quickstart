@@ -29,7 +29,11 @@ void corazones_vida(Player *vida)
 
     for (int i = 0; i < maxVidas; i++)
     {
-        Texture2D texActual = (i < vida->vida) ? corazon_rojo : corazon_oscuro;
+        Texture2D texActual;
+        if (i < vida->vida)
+            texActual = corazon_rojo;
+        else
+            texActual = corazon_oscuro;
 
         Rectangle origen = {0, 0, (float)texActual.width, (float)texActual.height};
         Rectangle destino = {margen + (i * separacion), margen, tamano, tamano};
@@ -154,7 +158,12 @@ void actualizar_animacion(Player *j)
     }
     else
     {
-        float paso = (fila_anim == FILA_CORRER) ? 0.10f : 0.25f;
+        float paso;
+        if (fila_anim == FILA_CORRER)
+            paso = 0.10f;
+        else
+            paso = 0.25f;
+
         tiem += GetFrameTime();
         if (tiem >= paso)
         {
@@ -180,7 +189,11 @@ void dibujar_jugador(Texture2D tex, Player *j, Color tinte)
     float anc = tex.width / (float)FRAM;
     float alt = tex.height / (float)FILAS;
 
-    Rectangle ori = {fra * anc, fila_anim * alt, (j->dir < 0) ? -anc : anc, alt};
+    float anchoOrigen = anc;
+    if (j->dir < 0)
+        anchoOrigen = -anc;
+
+    Rectangle ori = {fra * anc, fila_anim * alt, anchoOrigen, alt};
 
     float w = anc * ESCALA_SPRITE;
     float h = alt * ESCALA_SPRITE;
@@ -196,7 +209,11 @@ void dibujar_murc(Texture2D tex, Player *j, Color tinte)
     float anc = tex.width / (float)FMUR;
     float alt = (float)tex.height;
 
-    Rectangle ori = {fmu * anc, 0, (j->dir < 0) ? -anc : anc, alt};
+    float anchoOrigen = anc;
+    if (j->dir < 0)
+        anchoOrigen = -anc;
+
+    Rectangle ori = {fmu * anc, 0, anchoOrigen, alt};
 
     float w = MURW;
     float h = alt * w / anc;
