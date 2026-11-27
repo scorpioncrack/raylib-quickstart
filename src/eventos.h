@@ -23,6 +23,7 @@ int fila_anim = 0; // 0 quieto, 1 correr, 2 saltar
 
 // actualizar
 void act_jug(Player *entidad);
+void pantallas();
 // movimiento y colisiones
 void movimiento(Player *entidad);
 void objetos(Player *entidad);
@@ -40,6 +41,8 @@ void enemigos(Player jugador);
 void patrulla();
 
 // ==================== ACTUALIZAR ====================
+
+
 
 void act_jug(Player *entidad)
 {

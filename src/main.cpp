@@ -1,23 +1,23 @@
-#include "eventos.h" // aqui adentro ya se incluye mas.h (la tienda)
+#include "eventos.h"
 #include "visuales.h"
+#include "menu.h"
 
 int main()
 {
     InitWindow(1920, 1080, "THE ABYSS");
     ToggleBorderlessWindowed();
     SearchAndSetResourceDir("resources");
+    SetExitKey(KEY_NULL);
 
     Texture2D jugador_text = LoadTexture("protagonista/personaje_principal.png");
     Texture2D murc_text = LoadTexture("protagonista/personaje_volar.png");
     fondos[0] = LoadTexture("fondo1.png");
     fondos[1] = LoadTexture("fondo2.png");
-    fondos[2] = LoadTexture("fondo1.png"); // cambia por tu archivo de la pantalla 3
+    fondos[2] = LoadTexture("fondo1.png");
 
-    // texturas de corazones (cambia la ruta si las tienes en otra carpeta)
     corazon_rojo = LoadTexture("vida/vida_llena.png");
     corazon_oscuro = LoadTexture("vida/vida_vacia.png");
 
-    // zonas de cambio de pantalla (bordes izquierdo y derecho)
     areas[0].rect = {0.0F, 0.0F, 10.0F, (float)LARGO_pantalla};
     areas[1].rect = {(float)(ANCHO_PANTALLA - 10), 0.0F, 10.0F, (float)LARGO_pantalla};
 
@@ -37,60 +37,99 @@ int main()
         break;
     }
 
-    while (!WindowShouldClose())
+    while (!WindowShouldClose() && !salir)
     {
         // ---------- ACTUALIZAR ----------
-        tienda_actualizar(&jugador1, fondo_inicial); // siempre, fuera del if
-
-        if (!tienda_abierta())
+        switch (estado)
         {
-            act_jug(&jugador1);
-            pantallas(&jugador1);
-            actualizar_animacion(&jugador1);
-            anim_murc();
-            patrulla();
+        case ESTADO_MENU:
+        {
+            menu_actualizar();
+            break;
+        }
+        case ESTADO_OPCIONES:
+        {
+            opciones_actualizar();
+            break;
+        }
+        case ESTADO_JUEGO:
+        {
+            if (IsKeyPressed(KEY_ESCAPE) && !tienda_abierta())
+            {
+                estado = ESTADO_MENU;
+            }
+            else
+            {
+                tienda_actualizar(&jugador1, fondo_inicial); // siempre, fuera del if
+
+                if (!tienda_abierta())
+                {
+                    act_jug(&jugador1);
+                    pantallas(&jugador1);
+                    actualizar_animacion(&jugador1);
+                    anim_murc();
+                    patrulla();
+                }
+            }
+            break;
+        }
         }
 
         // ---------- DIBUJAR ----------
         BeginDrawing();
         ClearBackground(GRAY);
 
-        fondo1(fondos[fondo_inicial]);
-
-        // corazones de vida en la esquina superior izquierda
-        corazones_vida(&jugador1);
-
-        for (int i = 0; i < numObjetos; i++)
-            textura_plataformas(plat_text, escenario[i].rect);
-
-        tienda_dibujar_icono(&jugador1, fondo_inicial); // detras del jugador
-
-        Color tinte = WHITE;
-        if (jugador1.invul > 0)
+        switch (estado)
         {
-            if ((int)(jugador1.invul * 10) % 2 == 0)
-                tinte = Fade(WHITE, 0.3F);
-        }
-
-        if (jugador1.volar)
-            dibujar_murc(murc_text, &jugador1, tinte);
-        else
-            dibujar_jugador(jugador_text, &jugador1, tinte);
-
-        for (int i = 0; i < numEnemigos; i++)
+        case ESTADO_MENU:
         {
-            if (lista_enemigos[i].estado)
-                DrawRectangleRec(lista_enemigos[i].base.rec, lista_enemigos[i].color);
+            menu_dibujar(fondos[0]);
+            break;
         }
+        case ESTADO_OPCIONES:
+        {
+            opciones_dibujar(fondos[0]);
+            break;
+        }
+        case ESTADO_JUEGO:
+        {
+            fondo1(fondos[fondo_inicial]);
 
-        if (espadaVisible > 0)
-            DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
+            corazones_vida(&jugador1);
 
-        // lanza de sangre en vuelo
-        if (lanzaDuracion > 0)
-            DrawRectangleRec(lanza.rango, lanza.color);
+            for (int i = 0; i < numObjetos; i++)
+                textura_plataformas(plat_text, escenario[i].rect);
 
-        tienda_dibujar_menu(&jugador1); // al final, encima de todo
+            tienda_dibujar_icono(&jugador1, fondo_inicial); // detras del jugador
+
+            Color tinte = WHITE;
+            if (jugador1.invul > 0)
+            {
+                if ((int)(jugador1.invul * 10) % 2 == 0)
+                    tinte = Fade(WHITE, 0.3F);
+            }
+
+            if (jugador1.volar)
+                dibujar_murc(murc_text, &jugador1, tinte);
+            else
+                dibujar_jugador(jugador_text, &jugador1, tinte);
+
+            for (int i = 0; i < numEnemigos; i++)
+            {
+                if (lista_enemigos[i].estado)
+                    DrawRectangleRec(lista_enemigos[i].base.rec, lista_enemigos[i].color);
+            }
+
+            if (espadaVisible > 0)
+                DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
+
+            if (lanzaDuracion > 0)
+                DrawRectangleRec(lanza.rango, lanza.color);
+
+            tienda_dibujar_menu(&jugador1); // al final, encima de todo
+            break;
+        }
+        }
 
         EndDrawing();
     }
