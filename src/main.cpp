@@ -68,7 +68,7 @@ int main()
                     pantallas(&jugador1);
                     actualizar_animacion(&jugador1);
                     anim_murc();
-                    patrulla();
+                    
                 }
             }
             break;
@@ -100,7 +100,7 @@ int main()
             for (int i = 0; i < numObjetos; i++)
                 textura_plataformas(plat_text, escenario[i].rect);
 
-            tienda_dibujar_icono(&jugador1, fondo_inicial); // detras del jugador
+            tienda_dibujar_icono(&jugador1, fondo_inicial); 
 
             Color tinte = WHITE;
             if (jugador1.invul > 0)
@@ -126,7 +126,7 @@ int main()
             if (lanzaDuracion > 0)
                 DrawRectangleRec(lanza.rango, lanza.color);
 
-            tienda_dibujar_menu(&jugador1); // al final, encima de todo
+            tienda_dibujar_menu(&jugador1); 
             break;
         }
         }

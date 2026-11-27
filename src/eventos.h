@@ -202,6 +202,7 @@ void act_jug(Player *entidad)
     // dano de enemigos y movimiento
     enemigo_ataque(*entidad);
     movimiento(entidad);
+    patrulla();
 }
 
 // ==================== MOVIMIENTO Y COLISIONES ====================
