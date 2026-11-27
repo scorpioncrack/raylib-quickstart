@@ -1,4 +1,4 @@
-#include "eventos.h" // aqui adentro ya se incluye tienda.h
+#include "eventos.h" // aqui adentro ya se incluye mas.h (la tienda)
 #include "visuales.h"
 
 int main()
@@ -11,14 +11,15 @@ int main()
     Texture2D murc_text = LoadTexture("protagonista/personaje_volar.png");
     fondos[0] = LoadTexture("fondo1.png");
     fondos[1] = LoadTexture("fondo2.png");
-    fondos[2] = LoadTexture("fondo1.png");
+    fondos[2] = LoadTexture("fondo1.png"); // cambia por tu archivo de la pantalla 3
 
-    // Cargar texturas de corazones (cambia la ruta si las tienes en otra carpeta)
+    // texturas de corazones (cambia la ruta si las tienes en otra carpeta)
     corazon_rojo = LoadTexture("vida/vida_llena.png");
     corazon_oscuro = LoadTexture("vida/vida_vacia.png");
 
-    areas[0].rect = {0, 0, 10, LARGO_pantalla};
-    areas[1].rect = {ANCHO_PANTALLA - 10, 0, 10, LARGO_pantalla};
+    // zonas de cambio de pantalla (bordes izquierdo y derecho)
+    areas[0].rect = {0.0F, 0.0F, 10.0F, (float)LARGO_pantalla};
+    areas[1].rect = {(float)(ANCHO_PANTALLA - 10), 0.0F, 10.0F, (float)LARGO_pantalla};
 
     Texture2D plat_text = LoadTexture("plataforma.png");
 
@@ -39,7 +40,7 @@ int main()
     while (!WindowShouldClose())
     {
         // ---------- ACTUALIZAR ----------
-        tienda_actualizar(&jugador1, fondo_inicial); 
+        tienda_actualizar(&jugador1, fondo_inicial); // siempre, fuera del if
 
         if (!tienda_abierta())
         {
@@ -56,11 +57,8 @@ int main()
 
         fondo1(fondos[fondo_inicial]);
 
-        // Dibujar corazones en la esquina superior izquierda
+        // corazones de vida en la esquina superior izquierda
         corazones_vida(&jugador1);
-
-        DrawText(TextFormat("vidas %f", jugador1.sangre), 200, 200, 40, WHITE);
-        DrawText(TextFormat("Monedas: %d", jugador1.monedas), 200, 250, 40, YELLOW);
 
         for (int i = 0; i < numObjetos; i++)
             textura_plataformas(plat_text, escenario[i].rect);
@@ -88,6 +86,10 @@ int main()
         if (espadaVisible > 0)
             DrawRectangleRec(jugador1.arma.rango, jugador1.arma.color);
 
+        // lanza de sangre en vuelo
+        if (lanzaDuracion > 0)
+            DrawRectangleRec(lanza.rango, lanza.color);
+
         tienda_dibujar_menu(&jugador1); // al final, encima de todo
 
         EndDrawing();
@@ -103,4 +105,6 @@ int main()
     UnloadTexture(plat_text);
     UnloadTexture(corazon_rojo);
     UnloadTexture(corazon_oscuro);
+    CloseWindow();
+    return 0;
 }

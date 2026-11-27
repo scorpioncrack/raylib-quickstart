@@ -39,9 +39,7 @@ typedef struct Player
     float invul;
     bool volar;
     float sangre;
-//yolopusealvaro
-    int monedas;
-
+    int monedas; // yolopusealvaro
 } _player;
 
 typedef struct Objeto
@@ -62,9 +60,8 @@ typedef struct Enemigo
     Armas ataque;
 } _enemigo;
 
-
 // jugador
-// pos, rec, velX, velY, saltar, eje, tipo (1 = espada), arma, dir, vida, estado, invul, volar, sangre
+// pos, rec, velX, velY, saltar, eje, tipo (1 = espada), arma, dir, vida, estado, invul, volar, sangre, monedas
 Player jugador1 = {
     {X, Y},
     {X, Y, 64.0F, 64.0F},
@@ -79,6 +76,7 @@ Player jugador1 = {
     1,
     0,
     false,
+    0,
     0};
 
 // ataque de contacto de los enemigos
